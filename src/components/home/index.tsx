@@ -5,45 +5,22 @@ import { AiOutlineGithub, AiOutlineRight } from "react-icons/ai";
 
 interface UserData {
   login: string;
-  id: number;
-  node_id: string;
   avatar_url: string;
-  gravatar_id: string;
-  url: string;
-  html_url: string;
-  followers_url: string;
-  following_url: string;
-  gists_url: string;
-  starred_url: string;
-  subscriptions_url: string;
-  organizations_url: string;
-  repos_url: string;
-  events_url: string;
-  received_events_url: string;
-  type: string;
-  site_admin: boolean;
   name: string;
-  company: string | null;
-  blog: string;
   location: string;
-  email: string | null;
-  hireable: boolean | null;
-  bio: string;
-  twitter_username: string | null;
-  public_repos: number;
-  public_gists: number;
-  followers: number;
-  following: number;
-  created_at: string;
-  updated_at: string;
 }
 
 export default function Home() {
   const [username, setUsername] = useState("");
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [searchHistory, setSearchHistory] = useState<UserData[]>([]);
 
   async function search(e) {
     e.preventDefault();
+
+    if (username === searchHistory[0].login) {
+      return;
+    }
 
     try {
       const response = await axios.get<UserData>(
@@ -51,7 +28,11 @@ export default function Home() {
       );
 
       setUserData(response.data);
-      console.log(response.data);
+      setSearchHistory((prevSearchHistory) => {
+        const newHistory = [response.data, ...prevSearchHistory];
+        return newHistory.slice(0, 7);
+      });
+      console.log(searchHistory);
     } catch (error) {
       console.error("Erro ao buscar usuário do GitHub:", error);
     }
@@ -83,19 +64,37 @@ export default function Home() {
         {userData ? (
           <Section>
             <UserContainer>
-              <img src={`${userData.avatar_url}`}></img>
+              <img src={userData.avatar_url}></img>
               <InfoContainer>
                 <h1>{userData.name}</h1>
                 <h2>{userData.login}</h2>
-                <h3>Localização: {userData.location}</h3>
+                {userData.location && <h3>Localização: {userData.location}</h3>}
               </InfoContainer>
             </UserContainer>
           </Section>
         ) : (
           <Section></Section>
         )}
-
-        <Aside></Aside>
+        {searchHistory.length >= 2 ? (
+          <Aside>
+            <H1>Histórico de buscas:</H1>
+            {searchHistory.slice(1).map((historic, index) => (
+              <HistoricContainer key={index}>
+                <img src={historic.avatar_url}></img>
+                <InfoContainerHistoric>
+                  <h1>{historic.name}</h1>
+                  <h2>{historic.login}</h2>
+                  <h3>{historic.location}</h3>
+                </InfoContainerHistoric>
+              </HistoricContainer>
+            ))}
+          </Aside>
+        ) : (
+          <Aside>
+            <H1>Histórico de buscas:</H1>
+            <h1>você ainda não possui um historico de buscas</h1>
+          </Aside>
+        )}
       </SectionContainer>
     </Body>
   );
@@ -110,10 +109,28 @@ const UserContainer = styled.div`
   align-items: center;
   border-radius: 10px;
   box-shadow: 1px 1px 5px #202124;
+  box-sizing: border-box;
   img {
     width: 150px;
     height: 150px;
     border-radius: 100px;
+  }
+`;
+
+const HistoricContainer = styled.div`
+  width: 100%;
+  padding: 20px;
+  background-color: #e3e3e3;
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
+  border-radius: 10px;
+  box-shadow: 1px 1px 5px #202124;
+  margin-bottom: 10px;
+  img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
   }
 `;
 
@@ -132,13 +149,36 @@ const InfoContainer = styled.div`
     font-size: 20px;
     font-family: "Roboto", sans-serif;
     color: #202124;
-    margin-top: 10px;
+    margin-top: 6px;
   }
   h3 {
     font-size: 15px;
     font-family: "Roboto", sans-serif;
     color: #202124;
-    margin-top: 20px;
+    margin-top: 15px;
+  }
+`;
+
+const InfoContainerHistoric = styled.div`
+  height: vh;
+  margin-left: 15px;
+  h1 {
+    font-size: 15px;
+    font-family: "Roboto", sans-serif;
+    color: #202124;
+    font-weight: bold;
+  }
+  h2 {
+    font-size: 12px;
+    font-family: "Roboto", sans-serif;
+    color: #202124;
+    margin-top: 4px;
+  }
+  h3 {
+    font-size: 10px;
+    font-family: "Roboto", sans-serif;
+    color: #202124;
+    margin-top: 6px;
   }
 `;
 
@@ -147,11 +187,11 @@ const Form = styled.form`
   border: 2px solid #ccc;
   border-radius: 5px;
   width: 100%;
-  height: 30px;
+  height: 40px;
   padding: 2px;
   display: flex;
   input {
-    font-size: 14px;
+    font-size: 18px;
     border: none;
     height: 100%;
     width: 100%;
@@ -164,8 +204,8 @@ const Form = styled.form`
   button {
     background-color: transparent;
     border: none;
-    width: 30px;
-    border-radius: 30px;
+    width: 40px;
+    border-radius: 40px;
     cursor: pointer;
     background-color: #f0f0f0;
   }
@@ -213,22 +253,36 @@ const Nav = styled.nav`
   padding: 20px;
   font-family: "Roboto", sans-serif;
   width: 60%;
+  box-sizing: border-box;
   h1 {
     color: #202124;
-    font-size: 14px;
+    font-size: 20px;
     font-weight: bold;
     margin-bottom: 10px;
   }
 `;
 
 const Section = styled.section`
-  width: 65%;
+  box-sizing: border-box;
+  width: 63%;
   margin-right: 20px;
   margin-left: 20px;
 `;
 
 const Aside = styled.aside`
-  background-color: red;
+  background-color: #e3e3e3;
   width: 40%;
-  height: 100px;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 1px 1px 5px #202124;
+  min-height: 150px;
+`;
+
+const H1 = styled.h1`
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 20px;
+  font-family: "Roboto", sans-serif;
+  color: #202124;
+  font-weight: bold;
 `;
