@@ -18,7 +18,7 @@ export default function Home() {
   async function search(e) {
     e.preventDefault();
 
-    if (username === searchHistory[0].login) {
+    if (searchHistory.length >= 1 && username == searchHistory[0].login) {
       return;
     }
 
