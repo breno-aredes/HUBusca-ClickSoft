@@ -148,8 +148,9 @@ const InfoContainer = styled.div`
   h2 {
     font-size: 20px;
     font-family: "Roboto", sans-serif;
-    color: #202124;
-    margin-top: 5px;
+    color: #8f8f8f;
+    margin-top: 2px;
+    margin-bottom: 15px;
   }
   h3 {
     font-size: 15px;
@@ -171,8 +172,9 @@ const InfoContainerHistoric = styled.div`
   h2 {
     font-size: 12px;
     font-family: "Roboto", sans-serif;
-    color: #202124;
-    margin-top: 4px;
+    color: #8f8f8f;
+    margin-top: 2px;
+    margin-bottom: 5px;
   }
   h3 {
     font-size: 10px;
