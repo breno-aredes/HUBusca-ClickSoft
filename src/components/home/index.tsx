@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { AiOutlineGithub, AiOutlineRight } from "react-icons/ai";
@@ -15,9 +15,18 @@ export default function Home() {
   const [username, setUsername] = useState("");
   const [userData, setUserData] = useState<UserData | null>(null);
   const [searchHistory, setSearchHistory] = useState<UserData[]>([]);
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const storedSearchHistory = JSON.parse(
+      localStorage.getItem("searchHistory")
+    );
+    setSearchHistory(storedSearchHistory);
+  }, []);
 
   async function search(e) {
     e.preventDefault();
+    setCount(1);
 
     if (searchHistory.length >= 1 && username == searchHistory[0].login) {
       return;
@@ -29,10 +38,12 @@ export default function Home() {
       );
 
       setUserData(response.data);
-      setSearchHistory((prevSearchHistory) => {
-        const newHistory = [response.data, ...prevSearchHistory];
-        return newHistory.slice(0, 7);
-      });
+
+      const newHistory = [response.data, ...searchHistory].slice(0, 7);
+
+      console.log(newHistory);
+      setSearchHistory(newHistory);
+      localStorage.setItem("searchHistory", JSON.stringify(newHistory));
     } catch (error) {
       console.error("Erro ao buscar usuário do GitHub:", error);
     }
@@ -85,12 +96,14 @@ export default function Home() {
         {searchHistory.length >= 2 ? (
           <Aside>
             <H1>Histórico de buscas:</H1>
-            {searchHistory.slice(1).map((historic, index) => (
+            {searchHistory.slice(count).map((historic, index) => (
               <Link
-                href={`http://localhost:3000/${historic.login}`}
+                href={`${historic.login}`}
+                passHref
                 style={{ textDecoration: "none" }}
+                key={index}
               >
-                <HistoricContainer key={index}>
+                <HistoricContainer>
                   <img src={historic.avatar_url}></img>
                   <InfoContainerHistoric>
                     <h1>{historic.name}</h1>
@@ -315,7 +328,7 @@ const Section = styled.section`
   }
 `;
 
-const Aside = styled.aside`
+const Aside = styled.div`
   background-color: #ffffff;
   width: 40%;
   padding: 20px;
