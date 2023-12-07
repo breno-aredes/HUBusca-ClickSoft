@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { AiOutlineGithub, AiOutlineRight } from "react-icons/ai";
+import Link from "next/link";
 
 interface UserData {
   login: string;
@@ -62,14 +63,21 @@ export default function Home() {
       <SectionContainer>
         {userData ? (
           <Section>
-            <UserContainer>
-              <img src={userData.avatar_url}></img>
-              <InfoContainer>
-                <h1>{userData.name}</h1>
-                <h2>{userData.login}</h2>
-                {userData.location && <h3>Localização: {userData.location}</h3>}
-              </InfoContainer>
-            </UserContainer>
+            <Link
+              href={`http://localhost:3000/${userData.login}`}
+              style={{ textDecoration: "none" }}
+            >
+              <UserContainer>
+                <img src={userData.avatar_url}></img>
+                <InfoContainer>
+                  <h1>{userData.name}</h1>
+                  <h2>{userData.login}</h2>
+                  {userData.location && (
+                    <h3>Localização: {userData.location}</h3>
+                  )}
+                </InfoContainer>
+              </UserContainer>
+            </Link>
           </Section>
         ) : (
           <Section></Section>
@@ -78,14 +86,19 @@ export default function Home() {
           <Aside>
             <H1>Histórico de buscas:</H1>
             {searchHistory.slice(1).map((historic, index) => (
-              <HistoricContainer key={index}>
-                <img src={historic.avatar_url}></img>
-                <InfoContainerHistoric>
-                  <h1>{historic.name}</h1>
-                  <h2>{historic.login}</h2>
-                  <h3>{historic.location}</h3>
-                </InfoContainerHistoric>
-              </HistoricContainer>
+              <Link
+                href={`http://localhost:3000/${historic.login}`}
+                style={{ textDecoration: "none" }}
+              >
+                <HistoricContainer key={index}>
+                  <img src={historic.avatar_url}></img>
+                  <InfoContainerHistoric>
+                    <h1>{historic.name}</h1>
+                    <h2>{historic.login}</h2>
+                    <h3>{historic.location}</h3>
+                  </InfoContainerHistoric>
+                </HistoricContainer>
+              </Link>
             ))}
           </Aside>
         ) : (
