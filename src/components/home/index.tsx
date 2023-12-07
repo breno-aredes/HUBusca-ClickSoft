@@ -32,7 +32,6 @@ export default function Home() {
         const newHistory = [response.data, ...prevSearchHistory];
         return newHistory.slice(0, 7);
       });
-      console.log(searchHistory);
     } catch (error) {
       console.error("Erro ao buscar usuário do GitHub:", error);
     }
