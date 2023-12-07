@@ -103,41 +103,42 @@ export default function Home() {
 const UserContainer = styled.div`
   width: 100%;
   padding: 20px;
-  background-color: #e3e3e3;
+  background-color: #ffffff;
   display: flex;
   box-sizing: border-box;
   align-items: center;
   border-radius: 10px;
-  box-shadow: 1px 1px 5px #202124;
+  border: 1px solid #d4d5d7;
   box-sizing: border-box;
   img {
     width: 150px;
     height: 150px;
     border-radius: 100px;
+    border: 2px solid #d4d5d7;
   }
 `;
 
 const HistoricContainer = styled.div`
   width: 100%;
   padding: 20px;
-  background-color: #e3e3e3;
+  background-color: #ffffff;
   display: flex;
   box-sizing: border-box;
   align-items: center;
   border-radius: 10px;
-  box-shadow: 1px 1px 5px #202124;
+  border: 1px solid #d4d5d7;
   margin-bottom: 10px;
   img {
     width: 50px;
     height: 50px;
     border-radius: 50px;
+    border: 2px solid #d4d5d7;
   }
 `;
 
 const InfoContainer = styled.div`
   height: vh;
-  margin-left: 30px;
-
+  margin-left: 15px;
   padding: 20px;
   h1 {
     font-size: 30px;
@@ -149,13 +150,13 @@ const InfoContainer = styled.div`
     font-size: 20px;
     font-family: "Roboto", sans-serif;
     color: #202124;
-    margin-top: 6px;
+    margin-top: 5px;
   }
   h3 {
     font-size: 15px;
     font-family: "Roboto", sans-serif;
     color: #202124;
-    margin-top: 15px;
+    margin-top: 10px;
   }
 `;
 
@@ -184,30 +185,31 @@ const InfoContainerHistoric = styled.div`
 
 const Form = styled.form`
   background-color: white;
-  border: 2px solid #ccc;
   border-radius: 5px;
   width: 100%;
   height: 40px;
   padding: 2px;
   display: flex;
+  border: 1px solid #d4d5d7;
+  padding-left: 10px;
   input {
-    font-size: 18px;
+    font-size: 15px;
     border: none;
     height: 100%;
     width: 100%;
     outline: none;
     transition: border-color 0.3s ease;
+
     &:focus {
       border-color: #202124;
     }
   }
   button {
-    background-color: transparent;
     border: none;
     width: 40px;
     border-radius: 40px;
     cursor: pointer;
-    background-color: #f0f0f0;
+    background-color: #f3f4f6;
   }
 `;
 
@@ -270,11 +272,11 @@ const Section = styled.section`
 `;
 
 const Aside = styled.aside`
-  background-color: #e3e3e3;
+  background-color: #ffffff;
   width: 40%;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 1px 1px 5px #202124;
+  border: 1px solid #d4d5d7;
   min-height: 150px;
 `;
 
