@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import axios from "axios";
+import Link from "next/link";
 
 interface UserData {
   login: string;
@@ -13,10 +14,20 @@ interface UserData {
   id: number;
 }
 
+interface UserRepos {
+  name: string;
+  language: string;
+  description: string | null;
+  created_at: string;
+  pushed_at: string;
+  html_url: string;
+}
+
 export default function Profile() {
   const router = useRouter();
   const { username } = router.query;
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [userRepos, setUserRepos] = useState<UserRepos[]>([]);
 
   useEffect(() => {
     async function getUser() {
@@ -24,8 +35,19 @@ export default function Profile() {
         const response = await axios.get<UserData>(
           `https://api.github.com/users/${username}`
         );
-        console.log(response.data);
+
+        const responseRepos = await axios.get<UserRepos[]>(
+          `https://api.github.com/users/${username}/repos`
+        );
+
+        const reorderRepos = responseRepos.data.sort((a, b) => {
+          const dateA = new Date(a.pushed_at).getTime();
+          const dateB = new Date(b.pushed_at).getTime();
+          return dateB - dateA;
+        });
+
         setUserData(response.data);
+        setUserRepos(reorderRepos);
       } catch (error) {
         console.error("Erro ao buscar usuário do GitHub:", error);
       }
@@ -34,40 +56,101 @@ export default function Profile() {
     getUser();
   }, [username]);
 
-  return (
-    <Body>
-      <Header>
-        {userData && (
-          <UserContainer>
-            <img src={userData.avatar_url} alt="User Avatar" />
-            <InfoContainer>
-              <h1>{userData.name}</h1>
-              <h2>{userData.login}</h2>
-              <h3>id: {userData.id}</h3>
-              <h3>Localização: {userData.location}</h3>
+  function formatDate(isoDate) {
+    const date = new Date(isoDate);
 
-              <DataContainer>
-                <h3>Seguidores: {userData.followers}</h3>
-                <p>Repositórios públicos: {userData.public_repos}</p>
-              </DataContainer>
-            </InfoContainer>
-          </UserContainer>
-        )}
-      </Header>
-      <Section>
-        <h1>Repositorios:</h1>
-      </Section>
-    </Body>
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  }
+
+  return (
+    <>
+      {userData && (
+        <Body>
+          <Header>
+            <UserContainer>
+              <img src={userData.avatar_url} alt="User Avatar" />
+              <InfoContainer>
+                <h1>{userData.name}</h1>
+                <h2>{userData.login}</h2>
+                <h3>id: {userData.id}</h3>
+                {userData.location && <h3>Localização: {userData.location}</h3>}
+
+                <DataContainer>
+                  <h3>Seguidores: {userData.followers}</h3>
+                  <p>Repositórios públicos: {userData.public_repos}</p>
+                </DataContainer>
+              </InfoContainer>
+            </UserContainer>
+          </Header>
+          <Section>
+            <h1>Repositórios:</h1>
+            {userRepos.map((repo, i) => (
+              <RepositoriesContainer key={i}>
+                <Link href={repo.html_url} style={{ textDecoration: "none" }}>
+                  <h2>{repo.name}</h2>
+                </Link>
+                <p>Descrição: {repo.description}</p>
+                <RepoData>
+                  <h3>Linguagem: {repo.language}</h3>
+                  <h3>Criado:{formatDate(repo.created_at)}</h3>
+                  <h3>UpDate:{formatDate(repo.pushed_at)}</h3>
+                </RepoData>
+              </RepositoriesContainer>
+            ))}
+          </Section>
+        </Body>
+      )}
+    </>
   );
 }
 
+const RepositoriesContainer = styled.div`
+  margin-top: 10px;
+  padding-top: 20px;
+  font-family: "Roboto", sans-serif;
+  border-top: 1px solid green;
+  min-width: 550px;
+  width: 48%;
+  margin-right: 20px;
+  h2 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #0969da;
+    margin-bottom: 10px;
+  }
+  h2:hover {
+    text-decoration: underline;
+  }
+  p {
+    font-size: 16px;
+  }
+  h3 {
+    font-size: 14px;
+    width: 100%;
+  }
+`;
+
+const RepoData = styled.div`
+  display: flex;
+  width: 100%;
+  margin-top: 10px;
+  justify-content: space-between;
+`;
+
 const Section = styled.section`
   margin: 30px 0px 0px 30px;
+  display: flex;
+  flex-wrap: wrap;
   h1 {
     font-size: 30px;
     font-family: "Roboto", sans-serif;
     color: #202124;
     font-weight: bold;
+    width: 100%;
   }
 `;
 
@@ -124,8 +207,9 @@ const InfoContainer = styled.div`
   h2 {
     font-size: 20px;
     font-family: "Roboto", sans-serif;
-    color: #202124;
-    margin-top: 5px;
+    color: #8f8f8f;
+    margin-top: 2px;
+    margin-bottom: 15px;
   }
   h3 {
     font-size: 15px;
