@@ -226,3 +226,10 @@ export const H1 = styled.h1`
   color: #202124;
   font-weight: bold;
 `;
+
+export const ErrorMessage = styled.p`
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+  margin-left: 10px;
+`;
