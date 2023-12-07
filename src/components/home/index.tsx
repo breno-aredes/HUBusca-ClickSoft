@@ -18,9 +18,8 @@ export default function Home() {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    const storedSearchHistory = JSON.parse(
-      localStorage.getItem("searchHistory")
-    );
+    const storedSearchHistory =
+      JSON.parse(localStorage.getItem("searchHistory")) || [];
     setSearchHistory(storedSearchHistory);
   }, []);
 
