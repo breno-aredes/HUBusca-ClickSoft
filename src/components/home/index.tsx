@@ -64,7 +64,7 @@ export default function Home() {
         {userData ? (
           <Section>
             <Link
-              href={`http://localhost:3000/${userData.login}`}
+              href={`/${userData.login}`}
               style={{ textDecoration: "none" }}
             >
               <UserContainer>
