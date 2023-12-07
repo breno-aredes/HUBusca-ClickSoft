@@ -128,6 +128,13 @@ const UserContainer = styled.div`
     border-radius: 100px;
     border: 2px solid #d4d5d7;
   }
+
+  @media (max-width: 700px) {
+    img {
+      width: 100px;
+      height: 100px;
+    }
+  }
 `;
 
 const HistoricContainer = styled.div`
@@ -170,6 +177,17 @@ const InfoContainer = styled.div`
     font-family: "Roboto", sans-serif;
     color: #202124;
     margin-top: 10px;
+  }
+  @media (max-width: 700px) {
+    h1 {
+      font-size: 20px;
+    }
+    h2 {
+      font-size: 17px;
+    }
+    h3 {
+      font-size: 13;
+    }
   }
 `;
 
@@ -229,6 +247,9 @@ const Form = styled.form`
 
 const SectionContainer = styled.div`
   display: flex;
+  @media (max-width: 700px) {
+    flex-direction: column;
+  }
 `;
 
 const Body = styled.div`
@@ -276,6 +297,11 @@ const Nav = styled.nav`
     font-weight: bold;
     margin-bottom: 10px;
   }
+  @media (max-width: 700px) {
+    width: 100%;
+    margin-bottom: 0px;
+    padding: 10px 13px 10px 0px;
+  }
 `;
 
 const Section = styled.section`
@@ -283,6 +309,10 @@ const Section = styled.section`
   width: 63%;
   margin-right: 20px;
   margin-left: 20px;
+  @media (max-width: 700px) {
+    width: 100%;
+    margin-left: 0px;
+  }
 `;
 
 const Aside = styled.aside`
@@ -292,6 +322,12 @@ const Aside = styled.aside`
   border-radius: 10px;
   border: 1px solid #d4d5d7;
   min-height: 150px;
+  @media (max-width: 700px) {
+    margin-top: 15px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-right: 20px;
+  }
 `;
 
 const H1 = styled.h1`
