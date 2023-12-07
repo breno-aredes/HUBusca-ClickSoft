@@ -15,6 +15,7 @@ import {
   Section,
   Aside,
   H1,
+  ErrorMessage,
 } from "./style";
 
 interface UserData {
@@ -29,6 +30,7 @@ export default function Home() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [searchHistory, setSearchHistory] = useState<UserData[]>([]);
   const [count, setCount] = useState(0);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const storedSearchHistory =
@@ -38,7 +40,6 @@ export default function Home() {
 
   async function search(e) {
     e.preventDefault();
-    setCount(1);
 
     if (searchHistory.length >= 1 && username == searchHistory[0].login) {
       return;
@@ -49,14 +50,18 @@ export default function Home() {
         `https://api.github.com/users/${username}`
       );
 
+      setCount(1);
+
       setUserData(response.data);
 
       const newHistory = [response.data, ...searchHistory].slice(0, 7);
 
       console.log(newHistory);
+      setError(false);
       setSearchHistory(newHistory);
       localStorage.setItem("searchHistory", JSON.stringify(newHistory));
     } catch (error) {
+      setError(true);
       console.error("Erro ao buscar usuário do GitHub:", error);
     }
   }
@@ -82,7 +87,9 @@ export default function Home() {
             <AiOutlineRight />
           </button>
         </Form>
+        {error ? <ErrorMessage>*Usuário não encontrado</ErrorMessage> : <></>}
       </Nav>
+
       <SectionContainer>
         {userData ? (
           <Section>
