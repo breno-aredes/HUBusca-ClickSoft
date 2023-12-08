@@ -41,28 +41,36 @@ export default function Home() {
   async function search(e) {
     e.preventDefault();
 
-    if (searchHistory.length >= 1 && username == searchHistory[0].login) {
+    if (
+      searchHistory.length >= 1 &&
+      username == searchHistory[0].login &&
+      count === 1
+    ) {
       return;
-    }
+    } else {
+      try {
+        const response = await axios.get<UserData>(
+          `https://api.github.com/users/${username}`
+        );
 
-    try {
-      const response = await axios.get<UserData>(
-        `https://api.github.com/users/${username}`
-      );
+        setCount(1);
 
-      setCount(1);
+        setUserData(response.data);
 
-      setUserData(response.data);
+        if (count === 0 && username == searchHistory[0].login) {
+          const newHistory = [...searchHistory];
+          setSearchHistory(newHistory);
+        } else {
+          const newHistory = [response.data, ...searchHistory].slice(0, 7);
+          setSearchHistory(newHistory);
+          localStorage.setItem("searchHistory", JSON.stringify(newHistory));
+        }
 
-      const newHistory = [response.data, ...searchHistory].slice(0, 7);
-
-      console.log(newHistory);
-      setError(false);
-      setSearchHistory(newHistory);
-      localStorage.setItem("searchHistory", JSON.stringify(newHistory));
-    } catch (error) {
-      setError(true);
-      console.error("Erro ao buscar usuário do GitHub:", error);
+        setError(false);
+      } catch (error) {
+        setError(true);
+        console.error("Erro ao buscar usuário do GitHub:", error);
+      }
     }
   }
 
